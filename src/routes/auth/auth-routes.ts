@@ -9,10 +9,10 @@ import jwt from "jsonwebtoken";
 import generateRefreshToken from "../../middlewares/generate-refresh-token";
 import {registerUserController} from "../../controllers/auth/auth-controller";
 
-const router: Router = Router();
+const authRouter: Router = Router();
 
 
-router.post("/auth/login", async (req, res) => {
+authRouter.post("/auth/login", async (req, res) => {
     const { username, password } = req.body;
     // Authenticate User
 
@@ -22,7 +22,7 @@ router.post("/auth/login", async (req, res) => {
     res.json({ accessToken, refreshToken });
 });
 
-router.post("/auth/token", async (req, res) => {
+authRouter.post("/auth/token", async (req, res) => {
     const refreshToken = req.body?.token;
     if (!refreshToken) {
         res.status(401).json({ message: "Unauthorized" });
@@ -62,13 +62,13 @@ router.post("/auth/token", async (req, res) => {
 })
 
 // @ts-ignore
-router.post("/posts", verifyToken, (req, res) => {
+authRouter.post("/posts", verifyToken, (req, res) => {
     const userObj = req["user"];
     console.log(userObj);
     res.json({ message: `Posts created for user ${userObj.name}` });
 });
 
-router.post("/auth/register", async (req, res) => {
+authRouter.post("/auth/register", async (req, res) => {
     try {
         const user = await registerUserController(req, res);
         res.status(201).json({ id: user });
@@ -80,7 +80,7 @@ router.post("/auth/register", async (req, res) => {
     }
 });
 
-router.post("/auth/logout", async (req, res) => {
+authRouter.post("/auth/logout", async (req, res) => {
     const refreshToken = req.body?.token;
     await prisma.$connect();
     try {
@@ -100,4 +100,4 @@ router.post("/auth/logout", async (req, res) => {
 });
 
 
-export default router;
+export default authRouter;

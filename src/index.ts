@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(router);
 app.use(cors());
 
+
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });
