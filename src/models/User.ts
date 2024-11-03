@@ -3,12 +3,12 @@ export interface User {
     lastName: string;
     email: string;
     password: string;
-    dateOfBirth: Date;
     address?: Address;
 }
 
 export interface Address {
-    street: string;
+    line1: string;
+    line2: string;
     city: string;
     state: string;
     zip: string;

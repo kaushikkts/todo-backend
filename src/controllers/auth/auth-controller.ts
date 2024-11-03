@@ -6,6 +6,7 @@ import {User} from "../../models/User";
 
 const registerUserController = async (req: Request, res: Response) => {
     const user: User = req.body;
+
     // Check if user already exists
     const userExists = await prisma.user.findFirst({
         where: {
@@ -13,7 +14,7 @@ const registerUserController = async (req: Request, res: Response) => {
         }
     });
     if (userExists) {
-        res.status(400).json({ message: "User already exists" });
+        res.status(400).json({ message: "User already exists. Please login to continue." });
         return;
     }
 
@@ -28,11 +29,11 @@ const registerUserController = async (req: Request, res: Response) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                dateOfBirth: user?.dateOfBirth,
                 password: hashedPassword,
                 Address: {
                     create: {
-                        street: user?.address?.street,
+                        line1: user?.address?.line1,
+                        line2: user?.address.line2,
                         city: user?.address?.city,
                         state: user?.address?.state,
                         zip: user?.address?.zip

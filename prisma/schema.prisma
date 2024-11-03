@@ -9,15 +9,14 @@ datasource db {
 }
 
 model User {
-  id          String    @id @default(uuid())
-  firstName   String
-  lastName    String
-  dateOfBirth DateTime?
-  email       String    @unique
-  password    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isActive    Boolean   @default(true)
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
 
   Task    Task[]
   Address Address?
@@ -25,7 +24,8 @@ model User {
 
 model Address {
   id        String   @id @default(uuid())
-  street    String
+  line1     String
+  line2     String?
   city      String
   state     String
   zip       String

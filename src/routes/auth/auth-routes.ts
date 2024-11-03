@@ -37,10 +37,18 @@ authRouter.post("/auth/token", async (req, res) => {
         }
     })
     if (isBlacklisted) {
-        res.status(403).json({ message: "Forbidden" });
+        // This means the system is compromised
+        // Log the user out of all devices, blacklist current token as well
+        await prisma.blacklistToken.create({
+            data: {
+                token: refreshToken
+            }
+        })
+
+        res.status(403).json({ message: "Forbidden"});
         return;
     }
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err: any, user: { name: any; }) => {
         if (err) {
             try {
                 await prisma.blacklistToken.create({
@@ -51,7 +59,6 @@ authRouter.post("/auth/token", async (req, res) => {
             } catch (e) {
                 console.log(e);
             }
-            prisma.$disconnect();
             res.status(403).json({ message: "Forbidden" });
             return;
         }
@@ -94,8 +101,6 @@ authRouter.post("/auth/logout", async (req, res) => {
         res.status(201).json({ message: "Logout successful. Token already blacklisted" });
         return;
     }
-    prisma.$disconnect();
-
     res.sendStatus(204);
 });
 
