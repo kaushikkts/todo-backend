@@ -13,11 +13,12 @@ const authRouter: Router = Router();
 
 
 authRouter.post("/auth/login", async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     // Authenticate User
+    console.log(req.body);
 
-    const accessToken = generateAccessToken({name: username});
-    const refreshToken = generateRefreshToken({name: username});
+    const accessToken = generateAccessToken({name: email});
+    const refreshToken = generateRefreshToken({name: email});
 
     res.json({ accessToken, refreshToken });
 });
