@@ -4,11 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc",
-    "start": "npm run prisma:generate && npm run build && pm2 start dist/index.js -i 2",
+    "build": "tsc",
+    "start": "npm run build && npm run prisma:generate && npm run prisma:migrate && node dist/index.js",
     "dev": "prisma generate && nodemon src/index.ts",
     "docker:build": "docker build -t prisma-node-ts-express .",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
   },
   "keywords": [],
   "author": "",
@@ -22,8 +23,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
-    "nodemon": "^3.1.7",
-    "pm2": "^5.4.2"
+    "nodemon": "^3.1.7"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

@@ -1,19 +1,16 @@
-FROM ubuntu
-RUN sudo apt-get update
-RUN apt-get install -y curl
-FROM ubuntu
+FROM postgres:latest AS todo-db
+COPY init.sql /docker-entrypoint-initdb.d/
 
-RUN apt-get update
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
-RUN apt-get upgrade -y
-RUN apt-get install -y nodejs
 
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
-COPY dist /app/
+
+FROM node:latest AS todo-backend
 WORKDIR /app
-RUN npm install --production
-RUN npm install -g pm2
+COPY . .
+RUN npm install
+RUN npm install -g prisma nodemon
+RUN npm run build
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
 
-ENTRYPOINT ["node", "index.js"]
+
