@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: todo-db
+    restart: always
     ports:
       - "5432:5432"
     expose:
@@ -15,10 +16,16 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
   backend:
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src
+          target: /app/src
     build:
       context: .
       dockerfile: Dockerfile
       target: todo-backend
+    command: npm start
     ports:
       - "8000:8000"
       - "5555:5555"
@@ -28,5 +35,6 @@ services:
       DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - db
+
 volumes:
     postgres-data:

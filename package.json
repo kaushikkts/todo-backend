@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "npm run build && npm run prisma:generate && npm run prisma:migrate && node dist/index.js",
-    "dev": "prisma generate && nodemon src/index.ts",
+    "dev": "nodemon src/index.ts",
     "docker:build": "docker build -t prisma-node-ts-express .",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
