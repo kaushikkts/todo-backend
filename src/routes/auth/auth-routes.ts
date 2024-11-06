@@ -1,13 +1,10 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
 import { Router } from "express";
 import verifyToken from "../../middlewares/verify-token";
 import generateAccessToken from "../../middlewares/generate-access-token";
 import jwt from "jsonwebtoken";
 import generateRefreshToken from "../../middlewares/generate-refresh-token";
 import {loginUserController, registerUserController} from "../../controllers/auth/auth-controller";
+import prisma from "../../db";
 
 const authRouter: Router = Router();
 
@@ -44,31 +41,31 @@ authRouter.post("/auth/token", async (req, res) => {
     if (isBlacklisted) {
         // This means the system is compromised
         // Log the user out of all devices, blacklist current token as well
-        await prisma.blacklistToken.create({
-            data: {
-                token: refreshToken
-            }
-        })
+        // await prisma.blacklistToken.create({
+        //     data: {
+        //         token: refreshToken
+        //     }
+        // })
 
-        res.status(403).json({ message: "Forbidden"});
+        res.status(401).json({ message: "System is compromised" });
         return;
     }
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err: any, user: { name: any; }) => {
         if (err) {
-            try {
-                await prisma.blacklistToken.create({
-                    data: {
-                        token: refreshToken
-                    }
-                })
-            } catch (e) {
-                console.log(e);
-            }
-            res.status(403).json({ message: "Forbidden" });
+            res.status(401).json({ message: "Wrong refresh token / token expired. Please login again" });
             return;
         }
         const accessToken = generateAccessToken({name: user?.name});
-        prisma.$disconnect();
+        // try {
+        //     await prisma.blacklistToken.create({
+        //         data: {
+        //             token: refreshToken
+        //         }
+        //     })
+        // } catch (e) {
+        //     console.log(e);
+        // }
+        // const newRefreshToken = generateRefreshToken({name: user?.name});
         res.json({ accessToken });
     });
 })
@@ -77,6 +74,7 @@ authRouter.post("/auth/token", async (req, res) => {
 authRouter.post("/posts", verifyToken, (req, res) => {
     const userObj = req["user"];
     console.log(userObj);
+
     res.json({ message: `Posts created for user ${userObj.name}` });
 });
 
@@ -94,10 +92,10 @@ authRouter.post("/auth/register", async (req, res) => {
 });
 
 authRouter.post("/auth/logout", async (req, res) => {
-    const refreshToken = req.body?.token;
-    await prisma.$connect();
+    const refreshToken = req.body?.refreshToken;
+
     try {
-        await prisma.blacklistToken.create({
+        refreshToken && await prisma.blacklistToken.create({
             data: {
                 token: refreshToken
             }

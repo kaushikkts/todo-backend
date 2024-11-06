@@ -1,11 +1,9 @@
 import bcrypt from "bcrypt";
-import {Request, Response} from "express";
 import prisma from "../../db";
 import {User} from "../../models/User";
 
 
 const registerUserController = async (user: User) => {
-
 
     // Check if user already exists
     const userExists = await prisma.user.findFirst({
@@ -44,8 +42,6 @@ const registerUserController = async (user: User) => {
         });
     } catch (e) {
         throw Error(e);
-    } finally {
-        prisma.$disconnect();
     }
 };
 
@@ -69,7 +65,7 @@ const loginUserController = async (email: string, password: string) => {
     if (!passwordMatch) {
         throw new Error("Oops! Looks like you have entered wrong password.");
     }
-    return {id: user.id}
+    return user.id
 };
 
 export {
