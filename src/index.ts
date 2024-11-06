@@ -10,6 +10,11 @@ app.use(express.json());
 app.use(router);
 app.use(cors());
 
+
+app.get('/health', (req, res) => {
+  res.status(200).json('Todo backend app is running');
+});
+
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });

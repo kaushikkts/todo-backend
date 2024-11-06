@@ -4,8 +4,8 @@ import prisma from "../../db";
 import {User} from "../../models/User";
 
 
-const registerUserController = async (req: Request, res: Response) => {
-    const user: User = req.body;
+const registerUserController = async (user: User) => {
+
 
     // Check if user already exists
     const userExists = await prisma.user.findFirst({
@@ -14,8 +14,7 @@ const registerUserController = async (req: Request, res: Response) => {
         }
     });
     if (userExists) {
-        res.status(400).json({ message: "User already exists. Please login to continue." });
-        return;
+        throw new Error("User already exists");
     }
 
     // Hash password
@@ -33,7 +32,6 @@ const registerUserController = async (req: Request, res: Response) => {
                 Address: {
                     create: {
                         line1: user?.address?.line1,
-                        line2: user?.address.line2,
                         city: user?.address?.city,
                         state: user?.address?.state,
                         zip: user?.address?.zip
@@ -51,27 +49,30 @@ const registerUserController = async (req: Request, res: Response) => {
     }
 };
 
-const loginUserController = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+const loginUserController = async (email: string, password: string) => {
 
     const user = await prisma.user.findFirst({
         where: {
             email: email
+        },
+        select: {
+            id: true,
+            password: true
         }
     });
     if (!user) {
-        res.status(404).json({ message: "User not found" });
-        return;
+        throw new Error('User not found');
     }
 
     // Check password
     let passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-        res.status(401).json({ message: "Oops! Looks like you have entered wrong password." });
-        return;
+        throw new Error("Oops! Looks like you have entered wrong password.");
     }
+    return {id: user.id}
 };
 
 export {
-    registerUserController
+    registerUserController,
+    loginUserController
 }

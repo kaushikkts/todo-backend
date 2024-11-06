@@ -21,6 +21,12 @@ services:
         - action: sync+restart
           path: ./src
           target: /app/src
+        - action: rebuild
+          path: ./package.json
+          target: /app/package.json
+        - action: sync+restart
+          path: ./prisma
+          target: /app/prisma
     build:
       context: .
       dockerfile: Dockerfile
@@ -29,6 +35,8 @@ services:
     ports:
       - "8000:8000"
       - "5555:5555"
+    expose:
+      - "8000:8000"
     env_file:
       - .env
     environment:

@@ -5,18 +5,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "npm run build && npm run prisma:generate && npm run prisma:migrate && node dist/index.js",
+    "start": "npm run prisma:generate && npm run prisma:push && npm run build && npm run prisma:migrate && node dist/index.js",
+    "prisma-dev": "prisma generate && prisma db push",
     "dev": "nodemon src/index.ts",
     "docker:build": "docker build -t prisma-node-ts-express .",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:create-migrations": "prisma migrate dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^5.21.1",
+    "@prisma/client": "^5.22.0",
     "bcrpyt": "^2.0.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -29,8 +32,9 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
-    "prisma": "^5.21.1",
+    "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3"

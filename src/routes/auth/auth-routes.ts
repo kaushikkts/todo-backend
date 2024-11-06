@@ -7,20 +7,24 @@ import verifyToken from "../../middlewares/verify-token";
 import generateAccessToken from "../../middlewares/generate-access-token";
 import jwt from "jsonwebtoken";
 import generateRefreshToken from "../../middlewares/generate-refresh-token";
-import {registerUserController} from "../../controllers/auth/auth-controller";
+import {loginUserController, registerUserController} from "../../controllers/auth/auth-controller";
 
 const authRouter: Router = Router();
 
 
 authRouter.post("/auth/login", async (req, res) => {
     const { email, password } = req.body;
-    // Authenticate User
-    console.log(req.body);
-
-    const accessToken = generateAccessToken({name: email});
-    const refreshToken = generateRefreshToken({name: email});
-
-    res.json({ accessToken, refreshToken });
+    try {
+        const response = await loginUserController(email, password);
+        const accessToken = generateAccessToken({name: email});
+        const refreshToken = generateRefreshToken({name: email});
+        res.status(201).json({ id: response, accessToken: accessToken, refreshToken: refreshToken });
+    } catch (e) {
+        res.status(401).json({
+            message: `Error authenticating user: ${email}`,
+            rawError: e.toString()
+        });
+    }
 });
 
 authRouter.post("/auth/token", async (req, res) => {
@@ -78,8 +82,9 @@ authRouter.post("/posts", verifyToken, (req, res) => {
 
 authRouter.post("/auth/register", async (req, res) => {
     try {
-        const user = await registerUserController(req, res);
-        res.status(201).json({ id: user });
+        const user = req.body;
+        const registerUserResponse = await registerUserController(user);
+        res.status(201).json({ id: registerUserResponse });
     } catch (e) {
         res.status(400).json({
             message: "Error creating user",
