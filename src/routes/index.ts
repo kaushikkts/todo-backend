@@ -5,5 +5,4 @@ const router: Router = Router();
 
 router.use("/api", AuthRoutes);
 
-
 export default router;

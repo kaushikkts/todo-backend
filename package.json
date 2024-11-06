@@ -7,12 +7,13 @@
     "build": "tsc",
     "start": "npm run prisma:generate && npm run prisma:push && npm run build && npm run prisma:migrate && node dist/index.js",
     "prisma-dev": "prisma generate && prisma db push",
-    "dev": "nodemon src/index.ts",
+    "dev": "npm run format && nodemon src/index.ts",
     "docker:build": "docker build -t prisma-node-ts-express .",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:migrate": "prisma migrate deploy",
-    "prisma:create-migrations": "prisma migrate dev"
+    "prisma:create-migrations": "prisma migrate dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md,mdx,css,scss}\""
   },
   "keywords": [],
   "author": "",
@@ -34,6 +35,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
+    "prettier": "^3.3.3",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
