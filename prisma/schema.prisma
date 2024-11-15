@@ -39,6 +39,7 @@ model Task {
   id        String    @id @default(uuid())
   title     String
   content   String
+  status    Status    @default(NOT_STARTED)
   startDate DateTime
   endDate   DateTime?
   createdAt DateTime  @default(now())
@@ -54,4 +55,11 @@ model BlacklistToken {
   updatedAt DateTime @updatedAt
 
   @@index([token])
+}
+
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }

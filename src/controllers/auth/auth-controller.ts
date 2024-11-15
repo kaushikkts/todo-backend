@@ -58,7 +58,7 @@ const loginUserController = async (email: string, password: string) => {
   }
 
   // Check password
-  let passwordMatch = await bcrypt.compare(password, user.password);
+  const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
     throw new Error("Oops! Looks like you have entered wrong password.");
   }
