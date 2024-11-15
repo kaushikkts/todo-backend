@@ -17,13 +17,11 @@ authRouter.post("/auth/login", async (req, res) => {
     const response = await loginUserController(email, password);
     const accessToken = generateAccessToken({ name: email });
     const refreshToken = generateRefreshToken({ name: email });
-    res
-      .status(201)
-      .json({
-        id: response,
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      });
+    res.status(201).json({
+      id: response,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
   } catch (e) {
     res.status(401).json({
       message: `Error authenticating user: ${email}`,
@@ -63,11 +61,9 @@ authRouter.post("/auth/token", async (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     async (err: any, user: { name: any }) => {
       if (err) {
-        res
-          .status(401)
-          .json({
-            message: "Wrong refresh token / token expired. Please login again",
-          });
+        res.status(401).json({
+          message: "Wrong refresh token / token expired. Please login again",
+        });
         return;
       }
       const accessToken = generateAccessToken({ name: user?.name });

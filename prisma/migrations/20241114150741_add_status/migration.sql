@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED');
+
+-- AlterTable
+ALTER TABLE "Task" ADD COLUMN     "status" "Status" NOT NULL DEFAULT 'NOT_STARTED';
