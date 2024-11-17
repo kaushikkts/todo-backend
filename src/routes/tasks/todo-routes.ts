@@ -6,13 +6,12 @@ import {
   updateTodoController,
 } from "../../controllers/todo/todo-controller";
 import { Todo } from "../../interface/Todo";
-import verifyToken from "../../middlewares/verify-token";
 
 const todoRouter: Router = Router();
 
-todoRouter.get("/todos/:user", async (req, res) => {
+todoRouter.get("/todos/:userId", async (req, res) => {
   // Fetch todos from database and return them
-  const userId = req.params?.user;
+  const userId = req.params?.userId;
   if (!userId) {
     res.status(400).json({ message: "Invalid user id" });
     return;
